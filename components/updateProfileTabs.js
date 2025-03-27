@@ -1,5 +1,5 @@
 import React, { useState } from 'react';  
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';  
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';  
 import AppText from './appText';  
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -49,6 +49,7 @@ const UpdateProfileTabBar = () => {
               <AppText style={{ color: '#000',fontWeight: 200 }} fontSize={13}>Use your camera to take a picture</AppText>
             </View>
             <TouchableOpacity style={[styles.button, styles.center, {marginRight: 10}]}>
+              <TextInput placeholder='add' keyboardType='file' />
                   <FontAwesome name="angle-right" size={30} color="#000" />
             </TouchableOpacity>
           </View>
