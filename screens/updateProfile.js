@@ -29,7 +29,7 @@ const UpdateProfile = ({navigation}) => {
     
     return (
         <SafeAreaView>
-            <UpdateProfileTabBar />
+            <UpdateProfileTabBar navigation={navigation} />
         </SafeAreaView>
     )
 }
