@@ -7,14 +7,20 @@ import {
     Image,  
     Pressable,  
     Animated,  
+    ActivityIndicator,  
 } from 'react-native';  
 import AppText from '../components/appText';  
 import TabBar from '../components/profileTabs';  
 import FontAwesome from 'react-native-vector-icons/FontAwesome';  
-import ThreeDotNav from '../components/threeDot';  
+import baseUrl from '../components/url';  
 
 const Home = ({ navigation, route }) => {  
+    const [user] = useState(route.params.user);  
+    const [token] = useState(route.params.token);  
     const [fadeAnim] = useState(new Animated.Value(0));  
+    const [posts, setPosts] = useState([]);  
+    const [loading, setLoading] = useState(true);  
+    const [error, setError] = useState(null);  
 
     useEffect(() => {  
         // Fade-in animation when the component mounts  
@@ -23,24 +29,42 @@ const Home = ({ navigation, route }) => {
             duration: 1000,  
             useNativeDriver: true,  
         }).start();  
-    }, []);  
 
-    const user = route.params.user.user;  
+        // Fetching posts from the backend  
+        const fetchPosts = async () => {  
+            try {  
+                const response = await fetch(`${baseUrl}/post`, {  
+                    method: 'GET',  
+                    headers: {  
+                        'authorization': token,  
+                        Accept: 'application/json',   
+                    }  
+                });  
 
-    const menuOptions = [  
-        { key: 'UpdateProfile' },  
-        { key: 'Option 2' },  
-        { key: 'Option 3' },  
-        { key: 'Option 4' },  
-        { key: 'Option 5' },  
-    ];  
+                if (!response.ok) {  
+                    throw new Error(`HTTP error! status: ${response.status}`);  
+                }  
+
+                const data = await response.json();  
+                setPosts(data.posts);  
+            } catch (error) {  
+                console.error('Fetch Error:', error.message);  
+                setError(error.message);  
+            } finally {  
+                setLoading(false); // Ensure loading is set to false after the fetch is done  
+            }  
+        };  
+
+        fetchPosts();  
+    }, [token, fadeAnim]);  
 
     return (  
         <SafeAreaView style={styles.container}>  
             <ScrollView>  
                 <View style={styles.header}>  
-                    <ThreeDotNav title="Profile" dotColor="#fff" menuOptions={menuOptions} onPress={() => navigation.navigate('Options')} />  
+                    {/* <ThreeDotNav title="Profile" dotColor="#fff" menuOptions={menuOptions} onPress={() => navigation.navigate('Options')} />   */}  
                 </View>  
+                
                 <Animated.View style={{ opacity: fadeAnim }}>  
                     <View>  
                         <Image source={require('../assets/img/pro.png')} style={styles.profileImg} />  
@@ -72,6 +96,21 @@ const Home = ({ navigation, route }) => {
                             <AppText fontSize={12} style={styles.postText}> Posts</AppText>  
                         </Pressable>  
                     </View>  
+
+                    {loading ? (  // Display loading indicator  
+                        <ActivityIndicator size="large" color="#0000ff" style={{ marginVertical: 20 }} />  
+                    ) : error ? (  // Display error message  
+                        <AppText fontSize={12} style={{ color: 'red', textAlign: 'center' }}>{error}</AppText>  
+                    ) : posts.length === 0 ? (  
+                        <AppText fontSize={12} style={{ color: '#696161', textAlign: 'center' }}>No posts available.</AppText>  
+                    ) : (  
+                        posts.map(post => (  
+                            <View key={post._id} style={styles.postCard}>  
+                                <AppText fontSize={14}>{post.category}</AppText>  
+                                <AppText fontSize={12} style={{ color: '#696161' }}>{post.content}</AppText>  
+                            </View>  
+                        ))  
+                    )}  
                 </Animated.View>  
             </ScrollView>  
         </SafeAreaView>  
@@ -114,7 +153,7 @@ const styles = StyleSheet.create({
     },  
     editText: {  
         fontWeight: 'bold',  
-        color: 'blue', // Make the edit text more prominent  
+        color: 'blue',  
     },  
     aboutHead: {  
         marginHorizontal: '2.3%',  
@@ -141,6 +180,11 @@ const styles = StyleSheet.create({
     postText: {  
         marginHorizontal: 5,  
         color: '#000',  
+    },  
+    postCard: {  
+        padding: 10,  
+        borderBottomWidth: 1,  
+        borderBottomColor: '#ddd',  
     },  
 });  
 

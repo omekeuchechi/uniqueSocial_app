@@ -43,7 +43,14 @@ const Login = ({navigation}) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(user)
-        }).then((res) => res.json()).then((data) => navigation.navigate('Home', {user: data}))
+        }).then((res) => res.json()).then((data) => {
+            if (!data.user.isAdmin) {
+             return navigation.navigate('Home', {user: data.user, token: data.token})
+            }
+            if (data.user.isAdmin) {
+                return navigation.navigate('AdminDashboard', {user: data.user, token: data.token})
+            }
+        })
         .catch((err) => console.log(err))
 
     }
