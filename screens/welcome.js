@@ -21,6 +21,7 @@ import AppButton from '../components/appButton';
 const Welcome = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar backgroundColor="#0056b3" barStyle="light-content" />  
             <View style={[styles.center]}>
                 <Image source={require('../assets/img/welcome1.png')} style={[styles.welcomeImg, styles.center]} />    
             </View>

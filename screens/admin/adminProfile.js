@@ -5,7 +5,8 @@ import {
     ScrollView,  
     StyleSheet,  
     Pressable,  
-    StatusBar,  // Import StatusBar  
+    StatusBar,
+    TextInput,  // Import StatusBar  
 } from 'react-native';  
 import AppText from '../../components/appText';  
 import FontAwesome from 'react-native-vector-icons/FontAwesome';  
@@ -17,16 +18,47 @@ const AdminDashboard = ({ navigation, route }) => {
     const [isAdmin, setIsAdmin] = useState(user.isAdmin);  
     const [token, setToken] = useState(null);  
 
+    const post = {
+        category: 'Faith',
+        content: 'This is a test post',
+        userId: user.id
+    }
+
+    const handleCreatePost = () => {
+        fetch(`${baseUrl}/post/create`, {
+            method: 'POST',
+            body : JSON.stringify(post),
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json()).then((json) => {
+            console.log(json);
+            if (json.status === 'success') {
+                console.log('Post created successfully!');
+            } else {
+                console.log('Failed to create post:', json.message);
+            }
+        }).catch((error) => {
+            console.error('Error:', error);
+        })
+    }
+
     return (  
         <SafeAreaProvider style={{ backgroundColor: '#f0f4f8' }}> {/* Light background to contrast cards */}  
-            <StatusBar backgroundColor="#0056b3" barStyle="light-content" /> {/* Darker blue for status bar */}  
-            <SafeAreaView style={styles.container}>  
-                <View style={styles.header}>  
+            <StatusBar backgroundColor="#0056b3" barStyle="light-content" /> {/* Darker blue for status bar */} 
+            <View style={styles.formModal}>
+                <AppText>Create Post</AppText>
+                <TextInput placeholder='Enter post category' style={styles.categoryArea}/>
+                <TextInput multiline={true}  placeholder='Enter post content' style={styles.contentArea}/>              
+            </View>
+            <SafeAreaView style={styles.container}> 
+            <View style={styles.header}>  
                     <Pressable onPress={() => navigation.navigate('AdminDashboard')} style={styles.menuIcon}>  
                         <FontAwesome name="bars" size={20} color="#fff" />  
                     </Pressable>  
                     <AppText style={styles.headerText}>Welcome back Admin</AppText>  
-                    <ThreeDotNav navigation={navigation} />  
+                    {/*<ThreeDotNav navigation={navigation} />*/}  
                 </View>  
                 <ScrollView contentContainerStyle={styles.scrollContainer}>  
                     <View style={styles.greetingContainer}>  
@@ -53,13 +85,14 @@ const AdminDashboard = ({ navigation, route }) => {
                             <AppText style={styles.cardText}>Reports</AppText>  
                         </Pressable>  
                     </View>  
-                </ScrollView>  
+                </ScrollView>
+                
                 {/* Bottom tab bar with icons */}  
                 <View style={styles.bottomTab}>  
                     <Pressable onPress={() => navigation.navigate('Home')}>  
                         <FontAwesome name="home" size={24} color="#fff" />  
                     </Pressable>  
-                    <Pressable onPress={() => { /* Handle plus icon action */ }}>  
+                    <Pressable onPress={handleCreatePost}>  
                         <FontAwesome name="plus" size={24} color="#fff" />  
                     </Pressable>  
                     <Pressable onPress={() => { /* Handle comment icon action */ }}>  
@@ -75,13 +108,35 @@ const AdminDashboard = ({ navigation, route }) => {
 }  
 
 const styles = StyleSheet.create({  
-    container: {  
-        flex: 1,  
-        backgroundColor: '#f0f4f8', // Light background color for the main container  
+    container: {   
+        flex: 1,
+        backgroundColor: '#f0f4f8',  
     },  
+    formModal: {
+        flex: 14,
+        display: 'visible',
+        borderWidth: 2,
+        backgroundColor: '#f0f4f8',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    contentArea: {
+        height: 100,
+        width: '80%',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        borderRadius: 5
+    },
+    categoryArea: {
+        width: '80%',
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        borderRadius: 5
+    },
     header: {  
         height: 100,  
-        backgroundColor: '#0056b3', // Darker blue background for the header  
+        backgroundColor: '#0056b3',  
         borderBottomLeftRadius: 30,  
         borderBottomRightRadius: 30,  
         flexDirection: 'row',  
@@ -91,15 +146,15 @@ const styles = StyleSheet.create({
     menuIcon: {  
         marginRight: 10,  
     },  
-    headerText: {  
-        flex: 1,  
+    headerText: { 
+        flex: 1,   
         textAlign: 'center',  
         fontSize: 20,  
         fontWeight: 'bold',  
-        color: '#fff', // White text color for visibility  
+        color: '#fff',
     },  
     scrollContainer: {  
-        padding: 16,  
+        padding: 16
     },  
     greetingContainer: {  
         marginBottom: 20,  
@@ -107,19 +162,20 @@ const styles = StyleSheet.create({
     greetingText: {  
         fontSize: 24,  
         fontWeight: 'bold',  
-        color: '#333', // Dark grey for better readability  
+        color: '#333',
     },  
     subText: {  
         fontSize: 16,  
-        color: '#666', // Medium grey for subtlety  
+        color: '#666', 
     },  
     cardContainer: {  
         flexDirection: 'row',  
         justifyContent: 'space-between',  
         flexWrap: 'wrap',  
     },  
-    card: {  
-        backgroundColor: '#fff', // White background for card  
+    card: {
+        flex: 1,  
+        backgroundColor: '#fff',  
         padding: 16,  
         borderRadius: 8,  
         marginBottom: 10,  
@@ -128,19 +184,23 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },  
         shadowOpacity: 0.2,  
         shadowRadius: 1.5,  
-        flex: 1,  
         marginHorizontal: 5,  
     },  
     cardText: {  
         fontSize: 16,  
         textAlign: 'center',  
         fontWeight: 'bold',  
-        color: '#0056b3', // Matches icon color  
-        marginTop: 8, // Adds spacing for better alignment  
+        color: '#0056b3',  
+        marginTop: 8, 
     },  
     bottomTab: {  
-        height: 60,  
-        backgroundColor: '#0056b3', // Darker blue for the bottom tab bar  
+        height: 60,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        borderColor: '#404040',
+        backgroundColor: '#0056b3',
         flexDirection: 'row',  
         justifyContent: 'space-around',  
         alignItems: 'center',  

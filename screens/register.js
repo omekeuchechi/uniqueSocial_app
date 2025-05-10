@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, SafeAreaView, ScrollView, TextInput, Pressable, StyleSheet, Button } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TextInput, Pressable, StyleSheet, Button, StatusBar } from 'react-native';
 
 import { Checkbox } from '../components/checkBox';
 import Error from '../components/error';
@@ -42,6 +42,7 @@ const Register = ({navigation}) => {
 
     return (
         <SafeAreaView style={[styles.container, styles.center]}>
+            <StatusBar backgroundColor="#0056b3" barStyle="light-content" /> 
             <View style={styles.formContainer}>
                 <View style={[styles.center, styles.formHeader]}>
                     <AppText fontSize={40} style={[{ fontWeight: 'bold' },styles.normalText]}>

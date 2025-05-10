@@ -5,7 +5,8 @@ import {
     SafeAreaView,  
     TextInput,  
     Pressable,  
-    StyleSheet,  
+    StyleSheet,
+    StatusBar,  
     Modal  
 } from 'react-native';  
 import AppText from '../components/appText';  
@@ -34,6 +35,7 @@ const ForgetPassword = ({ navigation }) => {
 
     return (  
         <SafeAreaView style={[styles.container, styles.center]}>  
+        <StatusBar backgroundColor="#0056b3" barStyle="light-content" /> 
             <View style={styles.formContainer}>  
                 <View style={[styles.center, styles.formHeader]}>  
                     <Text style={[{ fontSize: 30, fontWeight: 'bold' }, styles.normalText]}>  

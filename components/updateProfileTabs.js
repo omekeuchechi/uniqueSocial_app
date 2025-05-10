@@ -3,16 +3,28 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView 
 import AppText from './appText';  
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FilePickerManager from 'react-native-file-picker';
+import AppButton from './appButton';
 
-const UpdateProfileTabBar = ({ navigation }) => {  
+const UpdateProfileTabBar = ({ navigation, route, user, token }) => {  
   const [activeTab, setActiveTab] = useState('Account');  
 
   // const renderNavigation = navigation.navigate('Welcome');
+  const [userData] = useState(user);
+  const [tokenData] = useState(token);
+
   const [renderNavigation, setRenderNavigation] = useState(navigation);
+  const [userPhone, setUserPhone] = useState('');
+  const [userBirthday, setUserBirthday] = useState('');
+  const [userCountry, setUserCountry] = useState('');
+  const [userCity, setUserCity] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userConfirmPassword, setUserConfirmPassword] = useState('');
+  
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const tabs = ['Account', 'Settings', 'Avatar'];
+  const tabs = ['Account', 'Auths', 'Avatar'];
   
   const handleImageSelection = (event) => {
     const selectedFile = event.nativeEvent.target.files[0];
@@ -37,8 +49,10 @@ const UpdateProfileTabBar = ({ navigation }) => {
     // });
   // }
 
+
+
   // Dummy content for each tab  
-  const renderContent = () => {  
+  const renderContent = () => {
     switch (activeTab) {  
       case 'Account':  
         return <View>
@@ -50,63 +64,67 @@ const UpdateProfileTabBar = ({ navigation }) => {
             <View style={styles.card}>
               <View style={[styles.inerCard, {flexDirection: 'row', justifyContent: 'space-between'}]}>
                 <AppText fontSize={14} style={styles.UserText}>Username</AppText>
-                <AppText fontSize={14} style={{ position: 'relative', left: 50 }}>omekejoseph</AppText>
-                <TouchableOpacity style={[styles.button]} onPress={() => renderNavigation.navigate('EditUserName')}>
-                <FontAwesome name="pencil" size={20} color="#000" />
+                <AppText fontSize={14} style={{ position: 'relative', left: 50, color: '#0056b3' }}>{userData.name}</AppText>
+                <TouchableOpacity style={[styles.button]} onPress={() => renderNavigation.navigate('EditUserName', { userData, tokenData })}>
+                  <FontAwesome name="pencil" size={20} color="#000" />
                 </TouchableOpacity>
               </View>
               <View style={styles.inerCard}>
                 <AppText fontSize={14} style={styles.UserText}>Phone</AppText>
-                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('EditPhone')}>
-                <AppText fontSize={14}>+2349031592480</AppText>
+                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('EditPhone', { userData, tokenData })}>
+                <AppText fontSize={14} style={{color: '#0056b3'}}>{userData.phoneNumber}</AppText>
                   <FontAwesome name="angle-right" size={30} color="#000" />
                 </TouchableOpacity>
               </View>
               <View style={styles.inerCard}>
                 <AppText fontSize={14} style={styles.UserText}>Birthday</AppText>
-                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('DataOfBirth')}>
-                <AppText fontSize={14}>Novermber 17 2015</AppText>
+                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('DataOfBirth', { userData, tokenData })}>
+                <AppText fontSize={14} style={{color: '#0056b3'}}>{userData.dateOfBirth}</AppText>
                   <FontAwesome name="angle-right" size={30} color="#000" />
                 </TouchableOpacity>
               </View>
               <View style={styles.inerCard}>
                 <AppText fontSize={14} style={styles.UserText}>Country</AppText>
-                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('CountrySelection')}>
-                <AppText fontSize={14}>Nigeria</AppText>
+                <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('CountrySelection', { userData, tokenData })}>
+                <AppText fontSize={14} style={{color: '#0056b3'}}>{userData.country}</AppText>
                   <FontAwesome name="angle-right" size={30} color="#000" />
                 </TouchableOpacity>
               </View>
               <View style={styles.inerCardLast}>
                 <AppText fontSize={14} style={styles.UserText}>City</AppText>
                 <TouchableOpacity style={[styles.button, styles.cardBtn]}>
-                <AppText fontSize={14}>Port Harcourt</AppText>
+                <AppText fontSize={14} style={{color: '#0056b3'}}>Port Harcourt</AppText>
                   <FontAwesome name="angle-right" size={30} color="#000" />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-            <AppText fontSize={14}>Login information</AppText>
-          <View style={styles.card}>
+          {/* <View style={styles.card}>
+          </View> */}
+        </View>;  
+      case 'Auths':  
+      return <View>
+          <AppText fontSize={14} style={{color: '#0056b3'}}>Login information</AppText>
             {/* this path is for login details */}
             <View style={styles.inerCard}>
               <AppText fontSize={14} style={styles.UserText}>Email</AppText>
-              <TouchableOpacity style={[styles.button, styles.cardBtn]}>
-              <AppText fontSize={14}>omekejoseph@gmail.com</AppText>
+              <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('EditEmail', {userData, tokenData})}>
+              <AppText fontSize={14} style={{color: '#0056b3'}}>{userData.email}</AppText>
                 <FontAwesome name="angle-right" size={30} color="#000" />
               </TouchableOpacity>
             </View>
             <View style={styles.inerCardLast}>
               <AppText fontSize={14} style={styles.UserText}>Update password</AppText>
-              <TouchableOpacity style={[styles.button, styles.cardBtn]}>
-              <AppText fontSize={14}>************</AppText>
+              <TouchableOpacity style={[styles.button, styles.cardBtn]} onPress={() => renderNavigation.navigate('EditPassword', {userData, tokenData})}>
+              <AppText fontSize={14} style={{color: '#0056b3'}}>************</AppText>
                 <FontAwesome name="angle-right" size={30} color="#000" />
               </TouchableOpacity>
             </View>
-          </View>
-        </View>;  
-      case 'Settings':  
-        return <View>
-          <AppText>Content for Comments tab</AppText>
+
+            {/* logout button */}
+            <AppButton titleStyle={{ color: '#fff', fontSize: 20 }}>
+              Logout <FontAwesome name="sign-out" size={20} color="#fff" />
+            </AppButton>
         </View>;  
       case 'Avatar':  
         return <View>
@@ -196,7 +214,7 @@ const styles = StyleSheet.create({
     left: 0,  
     right: 0,  
     height: 2,  
-    backgroundColor: 'blue',  
+    backgroundColor: '#0056b3',  
   },  
   contentContainer: {
     padding: 20,

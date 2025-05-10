@@ -6,6 +6,8 @@ import {
     TextInput, 
     Pressable, 
     StyleSheet,
+    StatusBar,
+    TouchableOpacity,
     Image
 } from 'react-native';
 import { Checkbox } from '../components/checkBox';
@@ -57,6 +59,7 @@ const Login = ({navigation}) => {
 
     return (
         <SafeAreaView style={[styles.container, styles.center]}>
+            <StatusBar backgroundColor="#0056b3" barStyle="light-content" />  
             {console.log()}
             <View style={styles.formContainer}>
                 <View style={[styles.center, styles.formHeader]}>
@@ -87,15 +90,15 @@ const Login = ({navigation}) => {
                             <AppText fontSize={13} onPress={() => navigation.navigate('ForgetPassword')} style={[styles.normalText, {textDecoration: 'underline'}]}>Forget password?</AppText>
                         </View>
                     </View>
-            <Pressable
+            <TouchableOpacity
                 style={
                 styles.loginBtn
                 } onPress={handleLogin}
             >
-                {({ pressed }) => (
+                {/* {({ pressed }) => ( */}
                 <Text style={styles.loginText}>Login</Text>
-                )}
-            </Pressable>
+                {/* )} */}
+            </TouchableOpacity>
             <View>
                 <AppText onPress={() => navigation.navigate('Register')} style={[styles.normalText, {fontWeight: 900, fontSize: 15, marginHorizontal: '23.8%'}]}>Create an account?</AppText>
             </View>

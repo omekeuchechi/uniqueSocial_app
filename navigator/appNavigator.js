@@ -12,6 +12,10 @@ import DataOfBirth from "../screens/dateOfBirth";
 import CountrySelection from "../screens/countrySide";
 import BlogPage from "../screens/bioPage";
 import AdminDashboard from "../screens/admin/adminProfile";
+import SettingsPage from "../screens/settings";
+import EditEmail from "../screens/editEmail";
+import EditPassword from "../screens/editPassword";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +25,7 @@ const AppNavigator = () => {
             initialRouteName="Welcome"
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: 'blue',
+                    backgroundColor: '#0056b3',
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
@@ -40,6 +44,9 @@ const AppNavigator = () => {
             <Stack.Screen name="DataOfBirth" component={DataOfBirth} />
             <Stack.Screen name="CountrySelection" component={CountrySelection} />
             <Stack.Screen name="BlogPage" component={BlogPage} />
+            <Stack.Screen name="SettingsPage" component={SettingsPage} />
+            <Stack.Screen name="EditEmail" component={EditEmail} />
+            <Stack.Screen name="EditPassword" component={EditPassword} />
             <Stack.Screen name="AdminDashboard"
                 component={AdminDashboard}
                 options={{ headerShown: false }}
