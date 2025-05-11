@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import { View, Text, SafeAreaView, ScrollView, TextInput, Pressable, StyleSheet, Button, StatusBar } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TextInput, Pressable, Image, StyleSheet, Button, StatusBar } from 'react-native';
 
 import { Checkbox } from '../components/checkBox';
 import Error from '../components/error';
 import AppText from '../components/appText';
 import baseUrl from '../components/url';
+import AppButton from '../components/appButton';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Access } from './sign';
 
 const Register = ({navigation}) => {
@@ -38,6 +40,38 @@ const Register = ({navigation}) => {
         })
         .catch((err) => console.log(err));
     }
+
+
+    // 857769217341-to45dj35cb03khplq9ppem6fitd9bhvj.apps.googleusercontent.com
+GoogleSignin.configure({
+    webClientId: '857769217341-to45dj35cb03khplq9ppem6fitd9bhvj.apps.googleusercontent.com',
+});
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+  
+      const response = await fetch(`${baseUrl}/user/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log('Google sign-in successful:', data);
+        // Save JWT (data.token) and user info (data.user) as needed
+      } else {
+        console.warn('Google sign-in failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+    }
+  };
 
 
     return (
@@ -79,6 +113,16 @@ const Register = ({navigation}) => {
             <View>
                 <AppText onPress={() => navigation.navigate('Login')} style={[styles.normalText, {fontWeight: 900, fontSize: 15, marginHorizontal: '21.1%'}]}>Already have an account?</AppText>
                 <AppText onPress={() => navigation.navigate('Home')} style={[styles.normalText, {fontWeight: 900, fontSize: 15, marginHorizontal: '21.1%'}]}>home?</AppText>
+            <AppButton 
+                style={styles.btn1} 
+                titleStyle={[styles.buttonText1, styles.center]} 
+                onPress={handleGoogleSignIn}
+            >
+                <Image source={require('../assets/img/google.png')} style={{width: 20, height: 15}} /> 
+                <AppText fontSize={16} style={[styles.buttonText1, {marginLeft: 10}]}>
+                    Continue with Google
+                </AppText>
+            </AppButton>
             </View>
             </View>
             </View>
@@ -113,7 +157,7 @@ const styles = StyleSheet.create({
         paddingVertical: 17,
         borderColor: '#cccccc',
         borderWidth: 2,
-        color: '#4d1ecf',
+        color: '#0056b3',
         borderRadius: 8
     },
     center: {
@@ -127,13 +171,18 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     normalText: {
-        color: '#4d1ecf',
+        color: '#0056b3',
     },
     loginBtn: {
-        backgroundColor: '#462be0',
+        backgroundColor: '#0056b3',
         borderRadius: 40,
         paddingVertical: 5,
         marginVertical: 30
-    }
+    },
+    btn1: {
+        backgroundColor: '#fff',
+        borderColor: '#0056b3',
+        borderWidth: 1,
+    },
 })
 export default Register;
